@@ -38,7 +38,7 @@ deploy:
   script:
     - rsync -avuz --exclude=".*" $CI_PROJECT_DIR $SERVER_USER@$SERVER_DOMAIN:~
     # Non interactive ssh gracefully reloads server
-    - ssh $SERVER_USER@$SERVER_DOMAIN 'pm2 reload $PROJECT_NAME'
+    - ssh $SERVER_USER@$SERVER_DOMAIN "pm2 reload $PROJECT_NAME"
   only:
     # Trigger deployments only from master branch
     - master
