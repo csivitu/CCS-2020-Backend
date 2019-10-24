@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const responseSchema = require('./response.schema');
+const responseSchema = require('./response.schema').schema;
 
 const participantSchema = new mongoose.Schema({
     name: {
@@ -32,11 +32,8 @@ const participantSchema = new mongoose.Schema({
         required: true,
     },
     responses: [responseSchema],
-    timeStarted: {
-        type: String,
-    },
-    timeEnded: {
-        type: String,
+    time: {
+        type: Object,
     },
     emailVerificationToken: {
         type: String,
