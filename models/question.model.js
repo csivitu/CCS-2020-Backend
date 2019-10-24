@@ -1,22 +1,27 @@
 const mongoose = require('mongoose');
+const constants = require('../tools/constants');
 
 const questionSchema = new mongoose.Schema({
     question: {
         type: String,
         required: true,
         unique: true,
-        index: true,
     },
     answer: {
         type: String,
         required: true,
         unique: true,
-        index: true,
     },
     domain: {
         type: String,
         required: true,
-        enum: ['tech', 'design', 'management', 'video'],
+        enum: constants.domains,
+    },
+    questionId: {
+        type: String,
+        required: true,
+        unique: true,
+        index: true,
     },
 });
 
