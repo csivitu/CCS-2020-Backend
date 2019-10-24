@@ -11,6 +11,7 @@ const indexRouter = require('./routes/index');
 const registerRouter = require('./routes/register');
 const authRouter = require('./routes/auth');
 const forgotPasswordRouter = require('./routes/forgotPassword');
+const quizRouter = require('./routes/quiz');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -37,4 +38,5 @@ app.listen(port, () => {
 app.use('/register', registerRouter);
 app.use('/auth', authRouter);
 app.use('/forgotPassword', forgotPasswordRouter);
+app.use('/quiz', quizRouter);
 app.use('/', indexRouter);
