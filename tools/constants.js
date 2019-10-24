@@ -45,4 +45,7 @@ module.exports = {
     quizDuration: 45, // in minutes
     lastRandomQuestion: 13,
     totalQuestions: 15,
+
+    invalidJWT: 'invalidJWT',
+    verifiedJWT: 'verifiedJWT',
 };

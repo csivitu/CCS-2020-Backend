@@ -2,8 +2,11 @@ const express = require('express');
 const Participant = require('../models/participant.model');
 const Response = require('../models/response.schema').model;
 const constants = require('../tools/constants');
+const authorize = require('../tools/authorize');
 
 const router = express.Router();
+
+router.use(authorize);
 
 const shuffle = (array) => {
     const newArray = array;
@@ -31,7 +34,7 @@ const generateQuestionList = (lastRandomQ, totalQuestions) => shuffle(range(1, l
 router.post('/start', async (req, res) => {
     // TODO: Authenticate participant
     const participant = await Participant.findOne({
-        email: req.session.email,
+        email: req.locals.participant.email,
     });
 
     if (!participant) {
@@ -45,6 +48,16 @@ router.post('/start', async (req, res) => {
 
     const { domain } = req.body;
 
+    const questionList = generateQuestionList(
+        constants.lastRandomQuestion,
+        constants.totalQuestions,
+    );
+
+    participant.responses = questionList.map((element) => ({
+        questionId: element,
+        response: null,
+    }));
+
     const timeObj = participant.time[domain];
 
     if (timeObj.timeStarted) {
@@ -55,16 +68,6 @@ router.post('/start', async (req, res) => {
 
         return;
     }
-
-    const questionList = generateQuestionList(
-        constants.lastRandomQuestion,
-        constants.totalQuestions,
-    );
-
-    participant.responses = questionList.map((element) => ({
-        questionId: element,
-        response: null,
-    }));
 
     timeObj.timeStarted = new Date().getTime();
     timeObj.timeEnded = timeObj.timeStarted + constants.quizDuration * 60000;
@@ -83,14 +86,26 @@ router.post('/respond', async (req, res) => {
     response.response = req.body.response;
 
     // TODO: 1. Find participant middleware through OAuth
+
     const participant = await Participant.findOne({
-        email: req.session.email,
+        email: req.locals.participant.email,
     });
 
     if (!participant) {
         res.json({
             success: false,
             message: constants.participantNotFound,
+        });
+
+        return;
+    }
+
+    const { domain } = req.body;
+
+    if (new Date().getTime >= participant.time[domain]) {
+        res.json({
+            success: false,
+            message: constants.quizTimeOver,
         });
 
         return;
