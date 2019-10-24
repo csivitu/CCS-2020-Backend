@@ -11,4 +11,7 @@ const responseSchema = new mongoose.Schema({
     },
 });
 
-module.exports = responseSchema;
+module.exports = {
+    schema: responseSchema,
+    model: mongoose.model('Response', responseSchema),
+};
