@@ -8,10 +8,13 @@ module.exports = {
 
     home: 'homePage',
 
+    domains: ['tech', 'management', 'design', 'video'],
+
     invalidEmail: 'invalidEmail',
     invalidMobile: 'invalidMobile',
     invalidPassword: 'invalidPassword',
     invalidRegNo: 'invalidRegNo',
+    invalidQuestion: 'invalidQuestion',
     incorrectPassword: 'incorrectPassword',
 
     participantNotFound: 'participantNotFound',
@@ -34,4 +37,12 @@ module.exports = {
     sendResetMailSubject: 'Reset your CCS Password',
     sendVerificationMailSubject: 'Verify your CCS Account',
     verificationSuccess: 'verificationSuccess',
+
+    quizStarted: 'quizStarted',
+    responseSaved: 'responseSaved',
+    alreadyAnswered: 'alreadyAnswered',
+    questionNotFound: 'questionNotFound',
+    quizDuration: 45, // in minutes
+    lastRandomQuestion: 13,
+    totalQuestions: 15,
 };
