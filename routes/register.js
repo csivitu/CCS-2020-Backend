@@ -83,6 +83,13 @@ router.post('/', async (req, res) => {
     participant.emailVerificationToken = (await crypto.randomBytes(32)).toString('hex');
     participant.passwordResetToken = (await crypto.randomBytes(32)).toString('hex');
 
+    Promise.all(constants.domains.forEach((domain) => {
+        participant.time[domain] = {
+            timeStarted: null,
+            timeEnded: null,
+        };
+    }));
+
     await participant.save();
 
     sendVerificationMail(participant);
