@@ -29,6 +29,7 @@ const generateQuestionList = (lastRandomQ, totalQuestions) => shuffle(range(1, l
     .concat(range(lastRandomQ, totalQuestions + 1));
 
 router.post('/start', async (req, res) => {
+    // TODO: Authenticate participant
     const participant = await Participant.findOne({
         email: req.session.email,
     });
