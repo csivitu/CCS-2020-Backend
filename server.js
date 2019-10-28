@@ -10,6 +10,11 @@ const quizRouter = require('./routes/quiz');
 const app = express();
 const port = process.env.PORT || 3000;
 
+if (!process.env.JWT_SECRET) {
+    console.error('Fatal Error: JWT_SECRET not defined');
+    process.exit(1);
+}
+
 app.use(bodyparser.urlencoded({
     extended: true,
 }));
