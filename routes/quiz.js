@@ -2,7 +2,7 @@ const express = require('express');
 const Participant = require('../models/participant.model');
 const Response = require('../models/response.schema').model;
 const constants = require('../tools/constants');
-const authorize = require('../tools/authorize');
+const authorize = require('../middlewares/authorize');
 
 const router = express.Router();
 
@@ -33,7 +33,7 @@ const generateQuestionList = (lastRandomQ, totalQuestions) => shuffle(range(1, l
 
 router.post('/start', async (req, res) => {
     const participant = await Participant.findOne({
-        email: req.locals.participant.email,
+        participantId: req.locals.participant.participantId,
     });
 
     if (!participant) {
@@ -84,10 +84,8 @@ router.post('/respond', async (req, res) => {
     response.questionId = req.body.questionId;
     response.response = req.body.response;
 
-    // TODO: 1. Find participant middleware through OAuth
-
     const participant = await Participant.findOne({
-        email: req.locals.participant.email,
+        participantId: req.locals.participant.participantId,
     });
 
     if (!participant) {

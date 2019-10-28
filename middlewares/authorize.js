@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const constants = require('./constants');
+const constants = require('../tools/constants');
 
 const decodeJWT = (req, res, next) => {
     try {
