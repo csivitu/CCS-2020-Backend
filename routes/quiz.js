@@ -33,7 +33,7 @@ const generateQuestionList = (lastRandomQ, totalQuestions) => shuffle(range(1, l
 
 router.post('/start', async (req, res) => {
     const participant = await Participant.findOne({
-        participantId: req.participant.participantId, // TODO: figure out how to use middlware
+        username: req.participant.username, // TODO: figure out how to use middlware
     });
 
     if (!participant) {
@@ -85,7 +85,7 @@ router.post('/respond', async (req, res) => {
     response.response = req.body.response;
 
     const participant = await Participant.findOne({
-        participantId: req.participant.participantId, // TODO: figure out how to use middlware
+        username: req.participant.username, // TODO: figure out how to use middlware
     });
 
     if (!participant) {
