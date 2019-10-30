@@ -3,10 +3,12 @@ const Participant = require('../models/participant.model');
 const Response = require('../models/response.schema').model;
 const constants = require('../tools/constants');
 const authorize = require('../middlewares/authorize');
+const checkFirstAttempt = require('../middlewares/checkFirstAttempt');
 
 const router = express.Router();
 
 router.use(authorize);
+router.use(checkFirstAttempt);
 
 const shuffle = (array) => {
     const newArray = array;
@@ -57,16 +59,12 @@ router.post('/start', async (req, res) => {
         response: null,
     }));
 
+    participant.time[domain] = {
+        timeStarted: null,
+        timeEnded: null,
+    };
+
     const timeObj = participant.time[domain];
-
-    if (timeObj.timeStarted) {
-        res.json({
-            success: false,
-            message: constants.quizStartedAlready,
-        });
-
-        return;
-    }
 
     timeObj.timeStarted = new Date().getTime();
     timeObj.timeEnded = timeObj.timeStarted + constants.quizDuration * 60000;
