@@ -2,8 +2,13 @@ const express = require('express');
 const Participant = require('../models/participant.model');
 const Response = require('../models/response.schema').model;
 const constants = require('../tools/constants');
+const authorize = require('../middlewares/authorize');
+const checkFirstAttempt = require('../middlewares/checkFirstAttempt');
 
 const router = express.Router();
+
+router.use(authorize);
+router.use(checkFirstAttempt);
 
 const shuffle = (array) => {
     const newArray = array;
@@ -29,9 +34,8 @@ const generateQuestionList = (lastRandomQ, totalQuestions) => shuffle(range(1, l
     .concat(range(lastRandomQ, totalQuestions + 1));
 
 router.post('/start', async (req, res) => {
-    // TODO: Authenticate participant
     const participant = await Participant.findOne({
-        email: req.session.email,
+        username: req.participant.username, // TODO: figure out how to use middlware
     });
 
     if (!participant) {
@@ -45,17 +49,6 @@ router.post('/start', async (req, res) => {
 
     const { domain } = req.body;
 
-    const timeObj = participant.time[domain];
-
-    if (timeObj.timeStarted) {
-        res.json({
-            success: false,
-            message: constants.quizStartedAlready,
-        });
-
-        return;
-    }
-
     const questionList = generateQuestionList(
         constants.lastRandomQuestion,
         constants.totalQuestions,
@@ -65,6 +58,13 @@ router.post('/start', async (req, res) => {
         questionId: element,
         response: null,
     }));
+
+    participant.time[domain] = {
+        timeStarted: null,
+        timeEnded: null,
+    };
+
+    const timeObj = participant.time[domain];
 
     timeObj.timeStarted = new Date().getTime();
     timeObj.timeEnded = timeObj.timeStarted + constants.quizDuration * 60000;
@@ -82,15 +82,25 @@ router.post('/respond', async (req, res) => {
     response.questionId = req.body.questionId;
     response.response = req.body.response;
 
-    // TODO: 1. Find participant middleware through OAuth
     const participant = await Participant.findOne({
-        email: req.session.email,
+        username: req.participant.username, // TODO: figure out how to use middlware
     });
 
     if (!participant) {
         res.json({
             success: false,
             message: constants.participantNotFound,
+        });
+
+        return;
+    }
+
+    const { domain } = req.body;
+
+    if (new Date().getTime >= participant.time[domain]) {
+        res.json({
+            success: false,
+            message: constants.quizTimeOver,
         });
 
         return;
