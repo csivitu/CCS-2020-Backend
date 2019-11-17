@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const responseSchema = require('./response.schema').schema;
-const timeObjSchema = require('./timeObj.schema');
+const domainObjSchema = require('./domainObj.schema');
 
 const participantSchema = new mongoose.Schema({
     participantId: {
@@ -10,7 +10,7 @@ const participantSchema = new mongoose.Schema({
         unique: true,
     },
     responses: [responseSchema],
-    time: timeObjSchema,
+    time: domainObjSchema,
 });
 
 module.exports = mongoose.model('Participant', participantSchema);
