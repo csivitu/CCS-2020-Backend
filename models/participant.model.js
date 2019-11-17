@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const responseSchema = require('./response.schema').schema;
 const domainObjSchema = require('./domainObj.schema');
+const adminDataSchema = require('./adminData.schema');
 
 const participantSchema = new mongoose.Schema({
     participantId: {
@@ -16,6 +17,7 @@ const participantSchema = new mongoose.Schema({
         video: [responseSchema],
     },
     time: domainObjSchema,
+    adminData: adminDataSchema,
 });
 
 module.exports = mongoose.model('Participant', participantSchema);
