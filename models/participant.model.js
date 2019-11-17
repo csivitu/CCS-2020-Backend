@@ -9,7 +9,12 @@ const participantSchema = new mongoose.Schema({
         index: true,
         unique: true,
     },
-    responses: [responseSchema],
+    responses: {
+        tech: [responseSchema],
+        design: [responseSchema],
+        management: [responseSchema],
+        video: [responseSchema],
+    },
     time: domainObjSchema,
 });
 

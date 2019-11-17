@@ -5,12 +5,10 @@ const questionSchema = new mongoose.Schema({
     question: {
         type: String,
         required: true,
-        unique: true,
     },
     answer: {
         type: String,
         required: true,
-        unique: true,
     },
     domain: {
         type: String,
@@ -20,7 +18,6 @@ const questionSchema = new mongoose.Schema({
     questionId: {
         type: String,
         required: true,
-        unique: true,
         index: true,
     },
 });
