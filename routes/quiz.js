@@ -187,7 +187,7 @@ router.post('/respond', async (req, res) => {
 
     const { domain } = req.body;
 
-    if (!domain) {
+    if (!domain || DOMAINS.indexOf(domain) === -1) {
         res.json({
             success: false,
             message: constants.invalidRequest,
@@ -228,13 +228,34 @@ router.post('/respond', async (req, res) => {
     });
 });
 
-router.post('/end', (req, res) => {
+router.post('/end', async (req, res) => {
     const { domain } = req.body;
 
     if (!domain || DOMAINS.indexOf(domain) === -1) {
         res.json({
             success: false,
             message: constants.invalidRequest,
+        });
+        return;
+    }
+
+    const participant = await Participant.findOne({ username: req.participant.username });
+    if (!participant.time[domain].timeStarted) {
+        res.json({
+            success: false,
+            message: constants.quizNotStarted,
+        });
+    } else if (new Date() >= participant.time[domain].timeEnded) {
+        res.json({
+            success: false,
+            message: constants.quizAlreadyAttempted,
+        });
+    } else {
+        participant.time[domain].timeEnded = new Date();
+        await participant.save();
+        res.json({
+            success: true,
+            message: constants.quizEnded,
         });
     }
 });

@@ -6,6 +6,8 @@ module.exports = {
     participantNotFound: 'participantNotFound',
 
     quizStarted: 'quizStarted',
+    quizNotStarted: 'quizNotStarted',
+    quizEnded: 'quizEnded',
     quizAlreadyAttempted: 'quizAlreadyAttempted',
     responseSaved: 'responseSaved',
     alreadyAnswered: 'alreadyAnswered',
