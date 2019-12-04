@@ -46,9 +46,8 @@ const getResponseQuestions = async (r) => {
     ).exec();
 
     questions.sort((a, b) => questionNos.indexOf(a) - questionNos.indexOf(b));
-
     // Add question to each corresponding response obj
-    const responses = r;
+    const responses = r.toObject();
     for (let i = 0; i < r.length; i += 1) {
         responses[i].question = questions[i].question;
     }
