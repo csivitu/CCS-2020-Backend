@@ -4,7 +4,7 @@ const domainObjSchema = require('./domainObj.schema');
 const adminDataSchema = require('./adminData.schema');
 
 const participantSchema = new mongoose.Schema({
-    participantId: {
+    username: {
         type: String,
         required: true,
         index: true,

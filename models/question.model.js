@@ -15,8 +15,8 @@ const questionSchema = new mongoose.Schema({
         required: true,
         enum: constants.domains,
     },
-    questionId: {
-        type: String,
+    questionNo: {
+        type: Number,
         required: true,
         index: true,
     },

@@ -6,12 +6,13 @@ module.exports = {
     participantNotFound: 'participantNotFound',
 
     quizStarted: 'quizStarted',
+    quizAlreadyAttempted: 'quizAlreadyAttempted',
     responseSaved: 'responseSaved',
     alreadyAnswered: 'alreadyAnswered',
     questionNotFound: 'questionNotFound',
-    quizDuration: 45, // in minutes
-    lastRandomQuestion: 13,
-    totalQuestions: 15,
+    quizDuration: 30, // in minutes
+    lastRandomQuestion: 8,
+    totalQuestions: 10,
 
     invalidJWT: 'invalidJWT',
     verifiedJWT: 'verifiedJWT',

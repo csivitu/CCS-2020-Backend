@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const responseSchema = new mongoose.Schema({
-    questionId: {
-        type: String,
+    questionNo: {
+        type: Number,
         required: true,
     },
     response: {

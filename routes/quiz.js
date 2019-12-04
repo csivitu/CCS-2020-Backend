@@ -1,14 +1,15 @@
 const express = require('express');
 const Participant = require('../models/participant.model');
+const Question = require('../models/question.model');
 const Response = require('../models/response.schema').model;
 const constants = require('../tools/constants');
 const authorize = require('../middlewares/authorize');
-const checkFirstAttempt = require('../middlewares/checkFirstAttempt');
+// const checkFirstAttempt = require('../middlewares/checkFirstAttempt');
 
 const router = express.Router();
 
 router.use(authorize);
-router.use(checkFirstAttempt);
+// router.use(checkFirstAttempt);
 
 const shuffle = (array) => {
     const newArray = array;
@@ -30,56 +31,123 @@ const range = (start, end) => {
     return Array.from({ length }, (_, i) => start + i);
 };
 
+const getResponseQuestions = async (r) => {
+    // Retrieve questions by question No
+    const questionNos = r.map((q) => q.questionNo);
+    const questions = await Question.find(
+        {
+            questionNo: {
+                $in: questionNos,
+            },
+        },
+        {
+            question: 1,
+        },
+    ).exec();
+
+    questions.sort((a, b) => questionNos.indexOf(a) - questionNos.indexOf(b));
+
+    // Add question to each corresponding response obj
+    const responses = r;
+    for (let i = 0; i < r.length; i += 1) {
+        responses[i].question = questions[i].question;
+    }
+    return responses;
+};
+
 const generateQuestionList = (lastRandomQ, totalQuestions) => shuffle(range(1, lastRandomQ))
     .concat(range(lastRandomQ, totalQuestions + 1));
 
 router.post('/start', async (req, res) => {
-    const participant = await Participant.findOne({
-        username: req.participant.username, // TODO: figure out how to use middlware
+    let participant = await Participant.findOne({
+        username: req.participant.username,
     });
 
     if (!participant) {
-        res.json({
-            success: false,
-            message: constants.participantNotFound,
+        participant = new Participant({
+            username: req.participant.username,
+            responses: {
+                tech: [],
+                design: [],
+                management: [],
+                video: [],
+            },
+            time: {
+                tech: {
+                    timeStarted: null,
+                    timeEnded: null,
+                },
+                design: {
+                    timeStarted: null,
+                    timeEnded: null,
+                },
+                management: {
+                    timeStarted: null,
+                    timeEnded: null,
+                },
+                video: {
+                    timeStarted: null,
+                    timeEnded: null,
+                },
+            },
+            adminData: {},
         });
-
-        return;
     }
 
     const { domain } = req.body;
 
-    const questionList = generateQuestionList(
-        constants.lastRandomQuestion,
-        constants.totalQuestions,
-    );
+    if (participant.time[domain].timeStarted !== null) {
+        if (new Date().getTime >= participant.time[domain].timeEnded) {
+            // Domain already attempted and time over
+            res.json({
+                success: false,
+                message: constants.quizAlreadyAttempted,
+            });
+        } else {
+            // Domain already started and in progress currently
+            const responses = participant.responses[domain];
+            res.json({
+                success: true,
+                responses: await getResponseQuestions(responses),
+                time: participant.time[domain],
+            });
+        }
+    } else {
+        // Domain not attempted, generate question list
+        const questionList = generateQuestionList(
+            constants.lastRandomQuestion,
+            constants.totalQuestions,
+        );
 
-    participant.responses = questionList.map((element) => ({
-        questionId: element,
-        response: null,
-    }));
+        participant.responses[domain] = questionList.map((element) => ({
+            questionNo: element,
+            response: null,
+        }));
 
-    participant.time[domain] = {
-        timeStarted: null,
-        timeEnded: null,
-    };
+        participant.time[domain] = {
+            timeStarted: null,
+            timeEnded: null,
+        };
 
-    const timeObj = participant.time[domain];
+        const timeObj = participant.time[domain];
 
-    timeObj.timeStarted = new Date().getTime();
-    timeObj.timeEnded = timeObj.timeStarted + constants.quizDuration * 60000;
+        timeObj.timeStarted = new Date().getTime();
+        timeObj.timeEnded = timeObj.timeStarted + constants.quizDuration * 60000;
 
-    await participant.save();
+        await participant.save();
 
-    res.json({
-        success: true,
-        message: questionList,
-    });
+        const responses = participant.responses[domain];
+        res.json({
+            success: true,
+            responses: await getResponseQuestions(responses),
+            time: participant.time[domain],
+        });
+    }
 });
 
 router.post('/respond', async (req, res) => {
     const response = new Response();
-    response.questionId = req.body.questionId;
+    response.questionNo = req.body.questionNo;
     response.response = req.body.response;
 
     const participant = await Participant.findOne({
@@ -97,7 +165,7 @@ router.post('/respond', async (req, res) => {
 
     const { domain } = req.body;
 
-    if (new Date().getTime >= participant.time[domain]) {
+    if (new Date().getTime >= participant.time[domain].timeEnded) {
         res.json({
             success: false,
             message: constants.quizTimeOver,
@@ -107,7 +175,7 @@ router.post('/respond', async (req, res) => {
     }
 
     const foundElement = participant.responses.find(
-        (element) => element.questionId === response.questionId,
+        (element) => element.questionNo === response.questionno,
     );
 
     if (!foundElement) {
