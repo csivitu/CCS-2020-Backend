@@ -99,7 +99,7 @@ router.post('/start', async (req, res) => {
 
     const { domain } = req.body;
 
-    if (!domain) {
+    if (!domain || DOMAINS.indexOf(domain) === -1) {
         res.json({
             success: false,
             message: constants.invalidRequest,
@@ -216,6 +216,17 @@ router.post('/respond', async (req, res) => {
         success: true,
         message: constants.responseSaved,
     });
+});
+
+router.post('/end', (req, res) => {
+    const { domain } = req.body;
+
+    if (!domain || DOMAINS.indexOf(domain) === -1) {
+        res.json({
+            success: false,
+            message: constants.invalidRequest,
+        });
+    }
 });
 
 module.exports = router;
