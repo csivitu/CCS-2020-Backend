@@ -49,7 +49,6 @@ const getResponseQuestions = async (d, r) => {
         },
     ).exec();
 
-    console.log(questions);
     questions.sort((a, b) => questionNos.indexOf(a.questionNo) - questionNos.indexOf(b.questionNo));
     // Add question to each corresponding response obj
     const responses = r.toObject();
@@ -125,7 +124,6 @@ router.post('/start', async (req, res) => {
         }
     } else {
         // Domain not attempted, generate question list
-        console.log('gen');
         for (let i = 0; i < DOMAINS.length; i += 1) {
             const d = DOMAINS[i];
             if (d !== domain) {
