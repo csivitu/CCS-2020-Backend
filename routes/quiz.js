@@ -218,7 +218,8 @@ router.post('/respond', async (req, res) => {
 
     participant.responses[domain][response.questionNo].response = response.response;
 
-    await participant.markModified('responses');
+    participant.markModified('responses');
+    await participant.save();
 
     res.json({
         success: true,
