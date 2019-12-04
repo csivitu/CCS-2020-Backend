@@ -13,6 +13,7 @@ module.exports = {
     quizDuration: 30, // in minutes
     lastRandomQuestion: 8,
     totalQuestions: 10,
+    invalidRequest: 'invalidRequest',
 
     invalidJWT: 'invalidJWT',
     verifiedJWT: 'verifiedJWT',

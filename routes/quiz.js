@@ -96,6 +96,13 @@ router.post('/start', async (req, res) => {
 
     const { domain } = req.body;
 
+    if (!domain) {
+        res.json({
+            success: false,
+            message: constants.invalidRequest,
+        });
+        return;
+    }
     if (participant.time[domain].timeStarted !== null) {
         if (new Date().getTime >= participant.time[domain].timeEnded) {
             // Domain already attempted and time over
