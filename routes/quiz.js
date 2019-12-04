@@ -6,6 +6,8 @@ const constants = require('../tools/constants');
 const authorize = require('../middlewares/authorize');
 // const checkFirstAttempt = require('../middlewares/checkFirstAttempt');
 
+const DOMAINS = ['tech', 'design', 'management', 'video'];
+
 const router = express.Router();
 
 router.use(authorize);
@@ -43,10 +45,12 @@ const getResponseQuestions = async (d, r) => {
         },
         {
             question: 1,
+            questionNo: 1,
         },
     ).exec();
 
-    questions.sort((a, b) => questionNos.indexOf(a) - questionNos.indexOf(b));
+    console.log(questions);
+    questions.sort((a, b) => questionNos.indexOf(a.questionNo) - questionNos.indexOf(b.questionNo));
     // Add question to each corresponding response obj
     const responses = r.toObject();
     for (let i = 0; i < r.length; i += 1) {
@@ -104,7 +108,7 @@ router.post('/start', async (req, res) => {
         return;
     }
     if (participant.time[domain].timeStarted !== null) {
-        if (new Date().getTime >= participant.time[domain].timeEnded) {
+        if (new Date() >= participant.time[domain].timeEnded) {
             // Domain already attempted and time over
             res.json({
                 success: false,
@@ -121,6 +125,19 @@ router.post('/start', async (req, res) => {
         }
     } else {
         // Domain not attempted, generate question list
+        console.log('gen');
+        for (let i = 0; i < DOMAINS.length; i += 1) {
+            const d = DOMAINS[i];
+            if (d !== domain) {
+                if (new Date() < participant.time[d].timeEnded) {
+                    res.json({
+                        success: false,
+                        message: constants.anotherDomainInProgress,
+                    });
+                    return;
+                }
+            }
+        }
         const questionList = generateQuestionList(
             constants.lastRandomQuestion,
             constants.totalQuestions,
@@ -138,9 +155,9 @@ router.post('/start', async (req, res) => {
 
         const timeObj = participant.time[domain];
 
-        timeObj.timeStarted = new Date().getTime();
-        timeObj.timeEnded = timeObj.timeStarted + constants.quizDuration * 60000;
-
+        const now = Date.now();
+        timeObj.timeStarted = now;
+        timeObj.timeEnded = now + constants.quizDuration * 60000;
         await participant.save();
 
         const responses = participant.responses[domain];
@@ -172,7 +189,7 @@ router.post('/respond', async (req, res) => {
 
     const { domain } = req.body;
 
-    if (new Date().getTime >= participant.time[domain].timeEnded) {
+    if (new Date() >= participant.time[domain].timeEnded) {
         res.json({
             success: false,
             message: constants.quizTimeOver,
