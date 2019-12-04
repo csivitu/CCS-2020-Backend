@@ -4,10 +4,10 @@ require('./models/db');
 const express = require('express');
 
 const bodyparser = require('body-parser');
+const cors = require('cors');
 
 const quizRouter = require('./routes/quiz');
 
-const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;

@@ -31,7 +31,7 @@ const range = (start, end) => {
     return Array.from({ length }, (_, i) => start + i);
 };
 
-const getResponseQuestions = async (r) => {
+const getResponseQuestions = async (d, r) => {
     // Retrieve questions by question No
     const questionNos = r.map((q) => q.questionNo);
     const questions = await Question.find(
@@ -39,6 +39,7 @@ const getResponseQuestions = async (r) => {
             questionNo: {
                 $in: questionNos,
             },
+            domain: d,
         },
         {
             question: 1,
@@ -114,7 +115,7 @@ router.post('/start', async (req, res) => {
             const responses = participant.responses[domain];
             res.json({
                 success: true,
-                responses: await getResponseQuestions(responses),
+                responses: await getResponseQuestions(domain, responses),
                 time: participant.time[domain],
             });
         }
@@ -145,7 +146,7 @@ router.post('/start', async (req, res) => {
         const responses = participant.responses[domain];
         res.json({
             success: true,
-            responses: await getResponseQuestions(responses),
+            responses: await getResponseQuestions(domain, responses),
             time: participant.time[domain],
         });
     }
