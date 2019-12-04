@@ -8,7 +8,6 @@ const cors = require('cors');
 
 const quizRouter = require('./routes/quiz');
 
-
 const app = express();
 const port = process.env.PORT || 3000;
 
