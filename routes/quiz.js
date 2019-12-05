@@ -129,6 +129,7 @@ router.post('/start', async (req, res) => {
                 if (new Date() < participant.time[d].timeEnded) {
                     res.json({
                         success: false,
+                        domain: d,
                         message: constants.anotherDomainInProgress,
                     });
                     return;
