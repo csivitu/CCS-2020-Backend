@@ -198,15 +198,6 @@ router.post('/respond', async (req, res) => {
         return;
     }
 
-    if (new Date() >= participant.time[domain].timeEnded) {
-        res.json({
-            success: false,
-            message: constants.quizAlreadyAttempted,
-        });
-
-        return;
-    }
-
     if (responses.length !== constants.totalQuestions) {
         res.json({
             success: false,
@@ -226,14 +217,30 @@ router.post('/respond', async (req, res) => {
     }
 
     participant.responses[domain] = responses;
-
     participant.markModified('responses');
-    await participant.save();
 
-    res.json({
-        success: true,
-        message: constants.responseSaved,
-    });
+    const now = new Date();
+    if (now >= participant.time[domain].timeEnded) {
+        if (now.getTime() < participant.time[domain].timeEnded.getTime() + 60000) {
+            // Buffer period of 1 minute for saving response
+            await participant.save();
+            res.json({
+                success: true,
+                message: constants.quizAlreadyAttempted,
+            });
+        } else {
+            res.json({
+                success: false,
+                message: constants.quizAlreadyAttempted,
+            });
+        }
+    } else {
+        await participant.save();
+        res.json({
+            success: true,
+            message: constants.responseSaved,
+        });
+    }
 });
 
 router.post('/end', async (req, res) => {
