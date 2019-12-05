@@ -189,8 +189,8 @@ router.post('/respond', async (req, res) => {
         return;
     }
 
-    const foundElement = participant.responses.find(
-        (element) => element.questionNo === response.questionno,
+    const foundElement = participant.responses[domain].find(
+        (element) => element.questionNo === response.questionNo,
     );
 
     if (!foundElement) {
@@ -201,13 +201,14 @@ router.post('/respond', async (req, res) => {
         return;
     }
 
-    foundElement.response = response.response;
+    participant.responses[domain][response.questionNo].response = response.response;
 
-    await participant.save();
+    await participant.markModified('responses');
 
     res.json({
         success: true,
         message: constants.responseSaved,
+        response: response.response,
     });
 });
 
