@@ -4,7 +4,6 @@ require('./models/db');
 const express = require('express');
 
 const bodyparser = require('body-parser');
-
 const cors = require('cors');
 
 const quizRouter = require('./routes/quiz');
