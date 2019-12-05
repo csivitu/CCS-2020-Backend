@@ -171,6 +171,14 @@ router.post('/respond', async (req, res) => {
 
     const { domain } = req.body;
 
+    if (!domain) {
+        res.json({
+            success: false,
+            message: constants.invalidRequest,
+        });
+        return;
+    }
+
     if (new Date().getTime >= participant.time[domain].timeEnded) {
         res.json({
             success: false,
