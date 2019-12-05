@@ -14,6 +14,7 @@ module.exports = {
     lastRandomQuestion: 8,
     totalQuestions: 10,
     invalidRequest: 'invalidRequest',
+    anotherDomainInProgress: 'anotherDomainInProgress',
 
     invalidJWT: 'invalidJWT',
     verifiedJWT: 'verifiedJWT',
