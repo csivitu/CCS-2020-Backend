@@ -7,6 +7,8 @@ const bodyparser = require('body-parser');
 
 const quizRouter = require('./routes/quiz');
 
+const cors = require('cors');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -20,6 +22,8 @@ app.use(bodyparser.urlencoded({
 }));
 
 app.use(bodyparser.json());
+
+if (process.env.ENVIRONMENT === 'dev') app.use(cors());
 
 app.listen(port, () => {
     console.log(`Express server started at port: ${port}`);
