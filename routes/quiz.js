@@ -163,6 +163,7 @@ router.post('/start', async (req, res) => {
             success: true,
             responses: await getResponseQuestions(domain, responses),
             time: participant.time[domain],
+            timestamp: Date.now(),
         });
     }
 });
@@ -228,6 +229,7 @@ router.post('/respond', async (req, res) => {
             res.json({
                 success: true,
                 message: constants.quizAlreadyAttempted,
+                timestamp: Date.now(),
             });
         } else {
             res.json({
@@ -240,6 +242,7 @@ router.post('/respond', async (req, res) => {
         res.json({
             success: true,
             message: constants.responseSaved,
+            timestamp: Date.now(),
         });
     }
 });
@@ -272,6 +275,7 @@ router.post('/end', async (req, res) => {
         res.json({
             success: true,
             message: constants.quizEnded,
+            timestamp: Date.now(),
         });
     }
 });
