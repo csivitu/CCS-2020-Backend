@@ -201,7 +201,7 @@ router.post('/respond', async (req, res) => {
     if (new Date() >= participant.time[domain].timeEnded) {
         res.json({
             success: false,
-            message: constants.quizTimeOver,
+            message: constants.quizAlreadyAttempted,
         });
 
         return;
