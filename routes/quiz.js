@@ -1,7 +1,6 @@
 const express = require('express');
 const Participant = require('../models/participant.model');
 const Question = require('../models/question.model');
-const Response = require('../models/response.schema').model;
 const constants = require('../tools/constants');
 const authorize = require('../middlewares/authorize');
 // const checkFirstAttempt = require('../middlewares/checkFirstAttempt');
@@ -168,10 +167,6 @@ router.post('/start', async (req, res) => {
 });
 
 router.post('/respond', async (req, res) => {
-    const response = new Response();
-    response.questionNo = req.body.questionNo;
-    response.response = req.body.response;
-
     const participant = await Participant.findOne({
         username: req.participant.username, // TODO: figure out how to use middlware
     });
@@ -185,12 +180,20 @@ router.post('/respond', async (req, res) => {
         return;
     }
 
-    const { domain } = req.body;
+    const { domain, responses } = req.body;
 
     if (!domain || DOMAINS.indexOf(domain) === -1) {
         res.json({
             success: false,
             message: constants.invalidRequest,
+        });
+        return;
+    }
+
+    if (!participant.time[domain].timeStarted) {
+        res.json({
+            success: false,
+            message: constants.quizNotStarted,
         });
         return;
     }
@@ -204,19 +207,25 @@ router.post('/respond', async (req, res) => {
         return;
     }
 
-    const foundElement = participant.responses[domain].find(
-        (element) => element.questionNo === response.questionNo,
-    );
-
-    if (!foundElement) {
+    if (responses.length !== constants.totalQuestions) {
         res.json({
             success: false,
-            message: constants.invalidQuestion,
+            message: constants.invalidRequest,
         });
         return;
     }
 
-    participant.responses[domain][response.questionNo].response = response.response;
+    for (let i = 0; i < constants.totalQuestions; i += 1) {
+        if (responses[i].questionNo !== participant.responses[domain][i].questionNo) {
+            res.json({
+                success: false,
+                message: constants.invalidRequest,
+            });
+            return;
+        }
+    }
+
+    participant.responses[domain] = responses;
 
     participant.markModified('responses');
     await participant.save();
@@ -224,7 +233,6 @@ router.post('/respond', async (req, res) => {
     res.json({
         success: true,
         message: constants.responseSaved,
-        response: response.response,
     });
 });
 
