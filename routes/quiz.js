@@ -168,6 +168,36 @@ router.post('/start', async (req, res) => {
     }
 });
 
+router.get('/domains', async (req, res) => {
+    const participant = await Participant.findOne({
+        username: req.participant.username,
+    });
+
+    if (!participant) {
+        res.json({
+            success: false,
+            message: 'serverError',
+        });
+        return;
+    }
+    const jsonResponse = {};
+    for (let i = 0; i < DOMAINS.length; i += 1) {
+        const domain = DOMAINS[i];
+        const { timeEnded } = participant.time[domain];
+
+        if (!timeEnded) {
+            jsonResponse[domain] = 'notAttempted';
+        } else if (new Date() > timeEnded) {
+            jsonResponse[domain] = 'ended';
+        } else {
+            jsonResponse[domain] = 'progress';
+        }
+    }
+
+    jsonResponse.success = true;
+    res.json(jsonResponse);
+});
+
 router.post('/respond', async (req, res) => {
     const participant = await Participant.findOne({
         username: req.participant.username, // TODO: figure out how to use middlware
