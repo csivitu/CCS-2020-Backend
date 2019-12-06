@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const responseSchema = require('./response.schema').schema;
-const domainObjSchema = require('./domainObj.schema');
-const adminDataSchema = require('./adminData.schema');
+const responseSchema = require('./response').schema;
+const domainObjSchema = require('./domainObj');
+const adminDataSchema = require('./adminData');
 
 const participantSchema = new mongoose.Schema({
     username: {
@@ -20,4 +20,4 @@ const participantSchema = new mongoose.Schema({
     adminData: adminDataSchema,
 });
 
-module.exports = mongoose.model('Participant', participantSchema);
+module.exports = participantSchema;

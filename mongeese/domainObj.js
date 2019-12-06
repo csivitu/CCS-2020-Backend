@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const timeObj = require('./timeObj.schema');
+const timeObj = require('./timeObj');
 
 const domainObjSchema = new mongoose.Schema({
     tech: timeObj,

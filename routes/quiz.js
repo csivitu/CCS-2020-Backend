@@ -1,6 +1,5 @@
 const express = require('express');
-const Participant = require('../models/participant.model');
-const Question = require('../models/question.model');
+const { Participant, Question } = require('../mongeese/models');
 const constants = require('../tools/constants');
 const authorize = require('../middlewares/authorize');
 // const checkFirstAttempt = require('../middlewares/checkFirstAttempt');
