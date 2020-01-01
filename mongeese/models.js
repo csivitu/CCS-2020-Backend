@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const participantSchema = require('./participant');
 const questionSchema = require('./question');
 const ccsDB = require('./db');

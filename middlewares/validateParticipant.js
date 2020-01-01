@@ -1,4 +1,4 @@
-const Participant = require('../models/participant.model');
+const { Participant } = require('../mongeese/models');
 const constants = require('../tools/constants');
 
 const validateParticipant = async (req, res, next) => {
