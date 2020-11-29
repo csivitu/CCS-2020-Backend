@@ -1,12 +1,11 @@
-/* eslint-disable import/no-unresolved */
-import dotenv from 'dotenv';
+import './utils/env.ts';
 
-dotenv.config();
+import './models/db.ts';
+
 const fastify = require('fastify')({
   logger: true,
 });
-
-fastify.register(require('./routes/routes'), { prefix: '/' });
+fastify.register(require('./routes/routes.ts'), { prefix: '/' });
 
 const PORT = process.env.PORT || 3000;
 
