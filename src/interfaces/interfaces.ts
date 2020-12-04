@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-export interface req {
+export interface reqSchema {
   body: {
     domain: string;
   };
@@ -17,9 +17,12 @@ export interface participant extends Document {
 		timeStarted: Date,
     };
   };
+  responses: {
+    [key: string]: Array<{questionNo: number}>;
+  };
 }
 
 export interface jsonResponseSchema{
-	[key: string]: string;
-	success?: boolean,
+  success?: boolean,
+  [key: string]: string,
 }
