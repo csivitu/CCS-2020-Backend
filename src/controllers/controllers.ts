@@ -1,15 +1,17 @@
 import Participant from '../models/participant';
-
+import { req, jsonResponseSchema } from '../interfaces/interfaces';
+import express from 'express';
 
 const DOMAINS = ['tech', 'design', 'management', 'video'];
 
-const endRoute = async (req: any, res: any) => {
+const endRoute = async (req: req, res: express.Response) => {
 	const { domain } = req.body;
 	if (!domain) {
 		res.json({
 			success: false,
 			message: 'Invalid request',
-		});
+		});import http from 'http';
+
 	}
 	const participant = await Participant.findOne({
 		username: req.participant.username,
@@ -36,7 +38,7 @@ const endRoute = async (req: any, res: any) => {
 	}
 };
 
-const domainRoute = async (req: any, res: any) => {
+const domainRoute = async (req: req, res: express.Response) => {
 	const participant = await Participant.findOne({
 		username: req.participant.username,
 	});
@@ -47,7 +49,7 @@ const domainRoute = async (req: any, res: any) => {
 			message: 'Data not found',
 		});
 	}
-	const jsonResponse = {};
+	const jsonResponse : jsonResponseSchema = {};
 	for (let i = 0; i < 4; i += 1) {
         const domain = DOMAINS[i];
         const { timeEnded } = participant.time[domain];

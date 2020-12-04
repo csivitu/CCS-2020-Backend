@@ -1,14 +1,12 @@
+/* eslint-disable no-console */
 import './utils/env.ts';
-
 import './models/db.ts';
+import express from 'express';
 
-const fastify = require('fastify')({
-	logger: true,
-});
-fastify.register(require('./routes/routes.ts'), { prefix: '/' });
+const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-fastify.listen(PORT, () => {
-	fastify.log.info(`Server listening on ${PORT}`);
+app.listen(PORT, () => {
+	console.log(`Server listening on ${PORT}`);
 });

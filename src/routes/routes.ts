@@ -1,6 +1,11 @@
-/* eslint-disable no-unused-vars */
-async function routes(fastify: any, options: Object) {
-	fastify.get('/', (request: Object, reply: Object) => ({ hello: 'world' }));
-}
+import express from 'express';
+import controllers from '../controllers/controllers';
 
-module.exports = routes;
+const router = express.Router();
+
+router
+	.route('/')
+	.get(controllers.domainRoute)
+	.post(controllers.endRoute);
+
+module.exports = router;

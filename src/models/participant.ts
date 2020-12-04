@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 import responseSchema from 'models/response';
 import domainObjSchema from 'models/domainObj';
+import { participant } from 'interfaces/interfaces';
 
-const Participant = new mongoose.Schema({
+const participantSchema = new mongoose.Schema({
 	username: {
 		type: String,
 		required: true,
@@ -18,5 +19,5 @@ const Participant = new mongoose.Schema({
 
 	time: domainObjSchema,
 });
-
+const Participant = mongoose.model<participant>('Participant', participantSchema);
 export default Participant;
