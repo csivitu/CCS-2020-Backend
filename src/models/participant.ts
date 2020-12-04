@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import responseSchema from 'models/response';
 import domainObjSchema from 'models/domainObj';
 
-const participantSchema = new mongoose.Schema({
+const Participant = new mongoose.Schema({
 	username: {
 		type: String,
 		required: true,
@@ -19,4 +19,4 @@ const participantSchema = new mongoose.Schema({
 	time: domainObjSchema,
 });
 
-export default participantSchema;
+export default Participant;

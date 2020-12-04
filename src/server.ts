@@ -1,4 +1,5 @@
 import './utils/env.ts';
+
 import './models/db.ts';
 
 const fastify = require('fastify')({
