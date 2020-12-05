@@ -1,10 +1,9 @@
-/* eslint-disable import/extensions */
 import express from 'express';
-import Participant from '../models/participant';
-import { reqSchema, jsonResponseSchema } from '../interfaces/interfaces';
-import constants from '../utils/constants';
-import generateQuestionList from '../utils/generateQuestionList';
-import getResponseQuestions from '../utils/getResponseQuestions';
+import Participant from 'models/participant';
+import { reqSchema, jsonResponseSchema } from 'interfaces/interfaces';
+import constants from 'utils/constants';
+import generateQuestionList from 'utils/generateQuestionList';
+import getResponseQuestions from 'utils/getResponseQuestions';
 
 const DOMAINS = ['tech', 'design', 'management', 'video'];
 
@@ -243,8 +242,8 @@ const startRoute = async (req: reqSchema, res: express.Response) => {
 		const timeObj = participant.time[domain];
 
 		const now = Date.now();
-		timeObj.timeStarted = now;
-		timeObj.timeEnded = now + constants.quizDuration * 60000;
+		timeObj.timeStarted = <Date><any>now;
+		timeObj.timeEnded = <Date> <any>(now + constants.quizDuration * 60000);
 		await participant.save();
 
 		const responses = participant.responses[domain];
