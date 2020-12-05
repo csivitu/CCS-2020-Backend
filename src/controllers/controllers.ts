@@ -1,7 +1,10 @@
+/* eslint-disable import/extensions */
 import express from 'express';
 import Participant from '../models/participant';
 import { reqSchema, jsonResponseSchema } from '../interfaces/interfaces';
-import constants from '../tools/constants';
+import constants from '../utils/constants';
+import generateQuestionList from '../utils/generateQuestionList';
+import getResponseQuestions from '../utils/getResponseQuestions';
 
 const DOMAINS = ['tech', 'design', 'management', 'video'];
 
@@ -146,4 +149,114 @@ const respondRoute = async (req, res) => {
 	}
 };
 
-export default { endRoute, domainRoute, respondRoute };
+const startRoute = async (req: reqSchema, res: express.Response) => {
+	let participant = await Participant.findOne({
+		username: req.participant.username,
+	});
+
+	if (!participant) {
+		participant = new Participant({
+			username: req.participant.username,
+			responses: {
+				tech: [],
+				design: [],
+				management: [],
+				video: [],
+			},
+			time: {
+				tech: {
+					timeStarted: null,
+					timeEnded: null,
+				},
+				design: {
+					timeStarted: null,
+					timeEnded: null,
+				},
+				management: {
+					timeStarted: null,
+					timeEnded: null,
+				},
+				video: {
+					timeStarted: null,
+					timeEnded: null,
+				},
+			},
+			adminData: {},
+		});
+	}
+
+	const { domain } = req.body;
+
+	if (!domain || DOMAINS.indexOf(domain) === -1) {
+		res.json({
+			success: false,
+			message: constants.invalidRequest,
+		});
+		return;
+	}
+	if (participant.time[domain].timeStarted !== null) {
+		if (new Date() >= participant.time[domain].timeEnded) {
+			// Domain already attempted and time over
+			res.json({
+				success: false,
+				message: constants.quizAlreadyAttempted,
+			});
+		} else {
+			// Domain already started and in progress currently
+			const responses = participant.responses[domain];
+			res.json({
+				success: true,
+				responses: await getResponseQuestions(domain, responses),
+				time: participant.time[domain],
+			});
+		}
+	} else {
+		// Domain not attempted, generate question list
+		for (let i = 0; i < DOMAINS.length; i += 1) {
+			const d = DOMAINS[i];
+			if (d !== domain) {
+				if (new Date() < participant.time[d].timeEnded) {
+					res.json({
+						success: false,
+						domain: d,
+						message: constants.anotherDomainInProgress,
+					});
+					return;
+				}
+			}
+		}
+		const questionList = generateQuestionList(
+			constants.lastRandomQuestion,
+			constants.totalQuestions,
+		);
+
+		participant.responses[domain] = questionList.map((element) => ({
+			questionNo: element,
+			response: null,
+		}));
+
+		participant.time[domain] = {
+			timeStarted: null,
+			timeEnded: null,
+		};
+
+		const timeObj = participant.time[domain];
+
+		const now = Date.now();
+		timeObj.timeStarted = now;
+		timeObj.timeEnded = now + constants.quizDuration * 60000;
+		await participant.save();
+
+		const responses = participant.responses[domain];
+		res.json({
+			success: true,
+			responses: await getResponseQuestions(domain, responses),
+			time: participant.time[domain],
+			timestamp: Date.now(),
+		});
+	}
+};
+
+export default {
+	endRoute, domainRoute, respondRoute, startRoute,
+};
