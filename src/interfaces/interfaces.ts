@@ -1,4 +1,5 @@
 import { Document } from 'mongoose';
+// TODO: success problem
 
 export interface reqSchema {
   body: {
@@ -25,4 +26,8 @@ export interface participant extends Document {
 export interface jsonResponseSchema{
   success?: boolean,
   [key: string]: string,
+}
+
+export interface questions extends Document {
+
 }
