@@ -1,5 +1,4 @@
-/* eslint-disable max-len */
-import Question from './..models/question'; // Figure out how to remove this error
+import Question from 'models/question';
 
 export default async function generateResponseQuestions(d: any, r: any) {
 	// TODO: change type from any
@@ -17,7 +16,8 @@ export default async function generateResponseQuestions(d: any, r: any) {
 		},
 	).exec();
 
-	questions.sort((a: any, b: any) => questionNos.indexOf(a.questionNo) - questionNos.indexOf(b.questionNo));
+	questions.sort((a: any, b: any) => questionNos.indexOf(a.questionNo)
+	- questionNos.indexOf(b.questionNo));
 	// Add question to each corresponding response obj
 	const responses = r.toObject();
 	for (let i = 0; i < r.length; i += 1) {

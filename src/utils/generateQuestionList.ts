@@ -1,9 +1,8 @@
-/* eslint-disable import/extensions */
-// TODO: remove this extensions thing
-import range from './range';
-import shuffle from './shuffle';
+import range from 'utils/range';
+import shuffle from 'utils/shuffle';
 
-export default function generateQuestionList(lastRandomQ: number, totalQuestions: number) {
-	shuffle(range(1, lastRandomQ))
+export default function generateQuestionList(lastRandomQ: number, totalQuestions: number):
+ Array<number> {
+	return shuffle(range(1, lastRandomQ))
 		.concat(range(lastRandomQ, totalQuestions + 1));
 }
