@@ -1,4 +1,5 @@
 /* eslint-disable import/extensions */
+// TODO: remove this extensions thing
 import range from './range';
 import shuffle from './shuffle';
 
