@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import responseSchema from 'models/response';
-import domainObjSchema from 'models/domainObj';
-import { participant } from 'interfaces/interfaces';
+import responseSchema from './response';
+import domainObjSchema from './domainObj';
+import { participant } from '../interfaces/interfaces';
 
 const participantSchema = new mongoose.Schema({
 	username: {

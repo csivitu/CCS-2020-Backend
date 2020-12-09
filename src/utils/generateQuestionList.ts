@@ -1,5 +1,5 @@
-import range from 'utils/range';
-import shuffle from 'utils/shuffle';
+import range from './range';
+import shuffle from './shuffle';
 
 export default function generateQuestionList(lastRandomQ: number, totalQuestions: number):
  Array<number> {

@@ -1,9 +1,9 @@
 import express from 'express';
-import Participant from 'models/participant';
-import { reqSchema, jsonResponseSchema } from 'interfaces/interfaces';
-import constants from 'utils/constants';
-import generateQuestionList from 'utils/generateQuestionList';
-import getResponseQuestions from 'utils/getResponseQuestions';
+import Participant from '../models/participant';
+import { reqSchema, jsonResponseSchema } from '../interfaces/interfaces';
+import constants from '../utils/constants';
+import generateQuestionList from '../utils/generateQuestionList';
+import getResponseQuestions from '../utils/getResponseQuestions';
 
 const DOMAINS = ['tech', 'design', 'management', 'video'];
 
@@ -69,7 +69,7 @@ const domainRoute = async (req: reqSchema, res: express.Response) => {
 	res.json(jsonResponse);
 };
 
-const respondRoute = async (req, res) => {
+const respondRoute = async (req: reqSchema, res: express.Response) => {
 	const participant = await Participant.findOne({
 		username: req.participant.username, // TODO: figure out how to use middlware
 	});
@@ -256,6 +256,6 @@ const startRoute = async (req: reqSchema, res: express.Response) => {
 	}
 };
 
-export default {
+export {
 	endRoute, domainRoute, respondRoute, startRoute,
 };

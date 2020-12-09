@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import timeObjSchema from 'models/timeObj';
+import timeObjSchema from './timeObj';
 
 const domainObjSchema = new mongoose.Schema({
 

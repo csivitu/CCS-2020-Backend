@@ -1,9 +1,13 @@
 import { Document } from 'mongoose';
+import express from 'express';
 // TODO: success problem
 
-export interface reqSchema {
+export interface reqSchema extends express.Request {
   body: {
     domain: string;
+    responses: Array<{
+      questionNo: number;
+    }>
   };
   participant: {
     username: string;
@@ -25,7 +29,7 @@ export interface participant extends Document {
 
 export interface jsonResponseSchema{
   success?: boolean,
-  [key: string]: string,
+  [key: string]: string | boolean,
 }
 
 export interface questions extends Document {

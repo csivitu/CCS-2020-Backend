@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 import express from 'express';
 import bodyParser from 'body-parser';
-import './utils/env.ts';
-import './models/db.ts';
-import mainRoutes from 'routes/routes';
+import './utils/env';
+import './models/db';
+import mainRoutes from './routes/routes';
 
 const app = express();
 

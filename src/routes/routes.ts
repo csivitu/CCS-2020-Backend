@@ -1,22 +1,24 @@
 import express from 'express';
-import controllers from 'controllers/controllers';
+import {
+	endRoute, domainRoute, startRoute, respondRoute,
+} from '../controllers/controllers';
 
 const router = express.Router();
 // TODO: Why error here
 router
 	.route('/end')
-	.post(controllers.endRoute);
+	.post(endRoute);
 
 router
 	.route('/domains')
-	.get(controllers.domainRoute);
+	.get(domainRoute);
 
 router
 	.route('/start')
-	.post(controllers.startRoute);
+	.post(startRoute);
 
 router
 	.route('/respond')
-	.post(controllers.respondRoute);
+	.post(respondRoute);
 
 export default router;

@@ -1,9 +1,9 @@
-import Question from 'models/question';
+import Question from '../models/question';
 
 export default async function generateResponseQuestions(d: any, r: any) {
 	// TODO: change type from any
 	const questionNos = r.map((q: any) => q.questionNo);
-	const questions = await Question.find(
+	const questions: any = await Question.find(
 		{
 			questionNo: {
 				$in: questionNos,
