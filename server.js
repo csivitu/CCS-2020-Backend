@@ -27,4 +27,5 @@ app.listen(port, () => {
     console.log(`Express server started at port: ${port}`);
 });
 
-app.use('/quiz', quizRouter);
+app.use(cors());
+app.use('/', quizRouter);
