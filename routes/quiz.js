@@ -33,7 +33,6 @@ const range = (start, end) => {
 
 const getResponseQuestions = async (d, r) => {
     // Retrieve questions by question No
-    console.log(r);
     const questionNos = r.map((q) => q.questionNo);
     const questions = await Question.find(
         {
@@ -51,7 +50,6 @@ const getResponseQuestions = async (d, r) => {
     questions.sort((a, b) => questionNos.indexOf(a.questionNo) - questionNos.indexOf(b.questionNo));
     // Add question to each corresponding response obj
     const responses = r.toObject();
-    console.log(responses);
     for (let i = 0; i < r.length; i += 1) {
         responses[i].question = questions[i].question;
     }
